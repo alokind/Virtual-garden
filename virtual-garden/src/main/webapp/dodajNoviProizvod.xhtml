@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+        <f:event type="preRenderView" listener="#{loginController.checkSessionLoggedIn()}"></f:event>
+        <f:event type="preRenderView" listener="#{dodajNoviProizvodController.dohvatiKorisnika()}"></f:event>
+
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:menubar style="margin-bottom: 40px; padding: 10px; padding-left: 40px; padding-right: 40px">
+                <p:submenu icon="pi pi-bars">
+                   <p:menuitem value="Početna strana" url="preduzece.xhtml" icon="pi pi-home"/>
+                   <p:menuitem value="Svi proizvodi predzeća" url="sviProizvodiPreduzeca.xhtml" icon="pi pi-list"/>
+                   <p:menuitem value="Dodajte nove proizvode" url="dodajNoviProizvod.xhtml" icon="pi pi-plus-circle"/>
+                   <p:menuitem value="Rezultati" url="preduzeceRezultati.xhtml" icon="pi pi-chart-line"/>
+                </p:submenu>
+               
+                <p:submenu label="#{preduzeceController.korisnik.ime}" style="float:right" icon="pi pi-user">
+                  <p:menuitem value="Promenite lozinku" url="promenaLozinkePreduzece.xhtml" icon="pi pi-pencil"/>
+                  <p:menuitem value="Izlogujte se" action="#{loginController.logout()}" icon="pi pi-sign-out"/>
+               </p:submenu>
+            </p:menubar>
+            <div >
+                <p:growl id="growl" for="growl" showDetail="true"/>
+                
+                <p:panel header="Dodajte proizvod ručno">
+                    <p:wizard flowListener="#{dodajNoviProizvodController.onFlowProcess}">
+                        <p:tab id="detalji" title="Detalji">
+                            <p:panel header="Detalji proizvoda">
+                                <h:panelGrid columns="2" columnClasses="label, value">
+                                    <h:outputText value="Naziv: *" />
+                                    <p:inputText value="#{dodajNoviProizvodController.naziv}" required="true" label="Naziv"/>
+
+                                    <h:outputText value="Proizvođač: *" />
+                                    <p:inputText value="#{dodajNoviProizvodController.proizvodjac}" required="true" label="Proizvođač"/>
+
+                                    <h:outputText value="Tip: *" />
+                                    <p:selectOneMenu  value="#{dodajNoviProizvodController.tip}" required="true">
+                                        <f:selectItem itemLabel="Sadnica" itemValue="Sadnica" />
+                                        <f:selectItem itemLabel="Preparat" itemValue="Preparat" />
+                                    </p:selectOneMenu>
+
+                                    <h:outputText value="Vreme rasta sadnice/Broj dana za koji preparat ubrzava rast: *" />
+                                    <p:inputNumber value="#{dodajNoviProizvodController.trajanje}" required="true" label="Broj dana" minValue="1"/>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:tab>
+
+                        <p:tab id="kolicinaicena" title="Količina i cena">
+                            <p:panel header="Količina i cena">
+                                <h:panelGrid columns="2" columnClasses="label, value">
+                                    <h:outputText value="Količina " />
+                                    <p:inputNumber value="#{dodajNoviProizvodController.kolicina}" />
+
+                                    <h:outputText value="Cena: " />
+                                    <p:inputText value="#{dodajNoviProizvodController.cena}" />
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:tab>
+
+                        <p:tab id="confirm" title="Potvrđivanje">
+                            <p:panel header="Potvrđivanje">
+                                <h:panelGrid id="confirmation" columns="2" columnClasses="grid,grid">            
+                                    <h:panelGrid columns="2" columnClasses="label, value">
+                                        <h:outputText value="Naziv: " />
+                                        <h:outputText value="#{dodajNoviProizvodController.naziv}" styleClass="outputLabel"/>
+
+                                        <h:outputText value="Proizvođač " />
+                                        <h:outputText value="#{dodajNoviProizvodController.proizvodjac}" styleClass="outputLabel"/>
+
+                                        <h:outputText value="Tip: " />
+                                        <h:outputText value="#{dodajNoviProizvodController.tip}" styleClass="outputLabel"/>
+
+                                        <h:outputText value="Vreme rasta/Ubrzanje rasta " />
+                                        <h:outputText value="#{dodajNoviProizvodController.trajanje}" styleClass="outputLabel"/>
+                                    </h:panelGrid>
+
+                                    <h:panelGrid columns="2" columnClasses="label, value">
+                                        <h:outputText value="Količina " />
+                                        <h:outputText value="#{dodajNoviProizvodController.kolicina}" styleClass="outputLabel"/>
+
+                                        <h:outputText value="Cena: " />
+                                        <h:outputText value="#{dodajNoviProizvodController.cena}" styleClass="outputLabel"/>
+
+                                        <h:outputText />
+                                        <h:outputText />
+                                        <h:outputText />
+                                        <h:outputText />
+                                    </h:panelGrid>
+                                </h:panelGrid>
+
+                                <p:commandButton value="Potvrdi" action="#{dodajNoviProizvodController.potvrdi}" update="@form" process="@this"/>
+                            </p:panel>
+                        </p:tab>
+                    </p:wizard>
+                </p:panel>
+                
+            </div>    
+        </h:form>
+        <br/><br/>
+        <h:form  enctype="multipart/form-data">
+            <div >
+                <p:panel header="Dodaj nove proizvode iz JSON fajla">
+                    <div style="justify-content: center; text-align: center">
+                    <p:fileUpload value="#{dodajNoviProizvodController.file}" mode="simple" skinSimple="true"/>
+                    <br />
+                    <p:commandButton value="Dodajte proizvode iz fajla" ajax="false" action="#{dodajNoviProizvodController.upload}"/>
+                    </div>
+                </p:panel>
+            </div>
+        </h:form>
+        <br></br><br></br>
+        <p:toolbar style="position:fixed; left: 0; bottom: 0; width: 100%">
+            <f:facet name="left">
+                © Nikola Dimitrijević
+            </f:facet>
+        </p:toolbar>
+
+    </h:body>
+</html>

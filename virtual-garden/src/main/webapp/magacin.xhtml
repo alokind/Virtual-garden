@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+        <f:event type="preRenderView" listener="#{loginController.checkSessionLoggedIn()}"></f:event>
+        <f:event type="preRenderView" listener="#{magacinController.dohvatiRasadnikKorisnikaIMagacin()}"></f:event>
+
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:growl id="message" skipDetailIfEqualsSummary="true"/>
+            <p:menubar style="margin-bottom: 40px; padding: 10px; padding-left: 40px; padding-right: 40px">
+                <p:submenu icon="pi pi-bars">
+                   <p:menuitem value="Početna strana" url="poljoprivrednik.xhtml" icon="pi pi-home"/>
+                   <p:menuitem value="Prodavnica" ajax="false" url="onlineProdavnica.xhtml" icon="pi pi-shopping-cart"/>
+                   <p:menuitem value="Dodaj novi rasadnik" ajax="false" url="dodajNoviRasadnik.xhtml" icon="pi pi-plus-circle"/>
+                </p:submenu>
+               
+                <p:submenu label="#{magacinController.korisnik.ime} #{magacinController.korisnik.prezime} " style="float:right" icon="pi pi-user">
+                  <p:menuitem value="Promenite lozinku" url="promenaLozinkePoljoprivrednik.xhtml" icon="pi pi-pencil"/>
+                  <p:menuitem value="Izlogujte se" action="#{loginController.logout()}" icon="pi pi-sign-out"/>
+                  
+               </p:submenu>
+            </p:menubar>
+            <div class="ui-fluid">
+                <p:dataTable 
+                var="proizvod" value="#{magacinController.magacin}" id="carTable"
+                rowKey="#{proizvod.id}" filteredValue="#{magacinController.filtriraniProizvodi}">
+                    <f:facet name="header">
+                        Magacin
+                    </f:facet>
+                    <p:column headerText="Naziv" sortBy="#{proizvod.naziv}" filterBy="#{proizvod.naziv}" filterMatchMode="contains">
+                        <h:outputText value="#{proizvod.naziv}" />
+                    </p:column>
+                    <p:column headerText="Proizvođač" sortBy="#{proizvod.proizvodjac}" filterBy="#{proizvod.proizvodjac}" filterMatchMode="contains">
+                        <h:outputText value="#{proizvod.proizvodjac}" />
+                    </p:column>
+                    <p:column headerText="Količina" sortBy="#{proizvod.kolicina}" filterBy="#{proizvod.kolicina}" filterMatchMode="contains" width="10%">
+                        <h:outputText value="#{proizvod.kolicina}" />
+                    </p:column>
+                    <p:column headerText="Otkaži narudžbinu" width="20%">
+                        <p:commandButton rendered="#{proizvod.mozeDaSePonisti eq 1}" icon="pi pi-times" value="Otkaži" action="#{magacinController.otkaziNarudzbinu(proizvod)}" update="@form">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>    
+        </h:form><br></br><br></br>
+        <p:toolbar style="position: fixed; left: 0; bottom: 0; width: 100%">
+            <f:facet name="left">
+                © Nikola Dimitrijević
+            </f:facet>
+        </p:toolbar>
+
+    </h:body>
+</html>

@@ -1,0 +1,28 @@
+{
+    "proizvodi":[
+        {
+            "naziv": "Prokelj",
+            "proizvodjac": "NS Seme",
+            "jeSadnica": 1,
+            "trajanje": 15,
+            "kolicina": 5,
+            "cena": 200
+        },
+        {
+            "naziv": "Etiol",
+            "proizvodjac": "Galenika",
+            "jeSadnica": 0,
+            "trajanje": 5,
+            "kolicina": 7,
+            "cena": 170
+        },
+        {
+            "naziv": "Krompir",
+            "proizvodjac": "NS Seme",
+            "jeSadnica": 1,
+            "trajanje": 17,
+            "kolicina": 6,
+            "cena": 140
+        }
+    ]
+}

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form >
+            <p:menubar style="margin-bottom: 40px; padding: 10px; padding-left: 40px; padding-right: 40px">
+                <p:menuitem value="Početna strana" url="index.xhtml" icon="pi pi-home"/>
+               
+                <p:submenu label="Registrujte se" style="float:right" icon="pi pi-user-plus">
+                  <p:menuitem value="Registrujte se kao poljoprivrednik" url="registrujPoljoprivrednika.xhtml" />
+                  <p:menuitem value="Registrujte se kao preduzeće" url="registrujPreduzece.xhtml" />
+               </p:submenu>
+            </p:menubar>
+            <div class="ui-g" >
+                <div class="ui-g-12 ui-lg-5" style="justify-content: center; display: flex; text-align: center">
+                    <p:panel style="width:80%">
+                        <f:facet name="header">
+                            <h2>Registrujte preduzeće</h2>
+                        </f:facet>
+                            <p:messages></p:messages>
+                            <p:inputText required="true" requiredMessage="Morate uneti ime preduzeća." 
+                                         style="width: 70%" value="#{registerController.korisnik.ime}" placeholder="Ime preduzeća"></p:inputText>
+                            <br></br>
+                            <p:inputText required="true" requiredMessage="Morate uneti korisničko ime." 
+                                         style="width: 70%" value="#{registerController.korisnik.korime}" placeholder="Korisničko ime"></p:inputText>
+                            <br></br>
+                            <p:password required="true" requiredMessage="Morate uneti lozinku." 
+                                        style="width: 70%" placeholder="Lozinka" 
+                                        validatorMessage="Lozinka mora sadržati minimalno 7 karaktera, 
+                                        od toga bar jedno veliko slovo, jedan broj i jedan specijalni karakter, 
+                                        i mora počinjati slovom." value="#{registerController.korisnik.lozinka}">
+                                <f:validateRegex pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\.,@#$%]).{7,})"></f:validateRegex>
+                            </p:password>
+                            <br></br>
+                            <p:password required="true" requiredMessage="Morate uneti potvrdu lozinke."
+                                        style="width: 70%" placeholder="Potvrdite lozinku" value="#{registerController.potvrdaLozinke}">
+                            </p:password>
+                            <br></br>
+                            <p:datePicker required="true" requiredMessage="Morate uneti datum osnivanja preduzeća." 
+                                          style="width: auto" placeholder="Datum osnivanja preduzeća" showIcon="true" id="date" value="#{registerController.korisnik.datum}"/>
+                            <br></br>
+                            <p:inputText required="true" requiredMessage="Morate uneti mesto osnivanja preduzeća."
+                                         style="width: 70%" placeholder="Mesto osnivanja preduzeća" value="#{registerController.korisnik.mesto}"></p:inputText>
+                            <br></br>
+                            <p:inputText required="true" requiredMessage="Morate uneti mejl."
+                                         style="width: 70%" placeholder="Mejl" value="#{registerController.korisnik.mejl}"></p:inputText>
+                            <br></br>
+                        <f:facet name="footer" >
+                            <div style="justify-content: center; display: flex">
+                                <p:captcha language="sr" requiredMessage="Morate da potvrdite da niste robot."/>
+                            </div>
+                            <div style="text-align: center">
+                                <p:commandButton style="margin:20px; width: 50%" ajax="false" value="Potvrdi" action="#{registerController.register('preduzece')}"></p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:panel>
+                </div>
+                <div class="ui-g-12 ui-lg-7" style="justify-content: center; display: flex;">
+                    <img src="img/povrce2.png" style="object-fit: cover;" height="500px"></img>
+                </div>
+            </div>
+        </h:form><br></br><br></br>
+        <p:toolbar style="position: fixed; left: 0; bottom: 0; width: 100%">
+            <f:facet name="left">
+                © Nikola Dimitrijević
+            </f:facet>
+        </p:toolbar>
+    </h:body>
+</html>

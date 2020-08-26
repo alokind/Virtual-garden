@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+        <f:event type="preRenderView" listener="#{loginController.checkSessionLoggedIn()}"></f:event>
+        <f:event type="preRenderView" listener="#{rasadnikController.dohvatiRasadnikISadnice()}"></f:event>
+        <f:event type="preRenderView" listener="#{rasadnikController.dohvatiProizvodeUMagacinu()}"></f:event>
+
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:menubar style="margin-bottom: 40px; padding: 10px; padding-left: 40px; padding-right: 40px">
+                <p:submenu icon="pi pi-bars">
+                   <p:menuitem value="Početna strana" url="poljoprivrednik.xhtml" icon="pi pi-home"/>
+                   <p:menuitem value="Prodavnica" ajax="false" url="onlineProdavnica.xhtml" icon="pi pi-shopping-cart"/>
+                   <p:menuitem value="Dodaj novi rasadnik" ajax="false" url="dodajNoviRasadnik.xhtml" icon="pi pi-plus-circle"/>
+                </p:submenu>
+               
+                <p:submenu label="#{rasadnikController.korisnik.ime} #{rasadnikController.korisnik.prezime} " style="float:right" icon="pi pi-user">
+                  <p:menuitem value="Promenite lozinku" url="promenaLozinkePoljoprivrednik.xhtml" icon="pi pi-pencil"/>
+                  <p:menuitem value="Izlogujte se" action="#{loginController.logout()}" icon="pi pi-sign-out"/>
+               </p:submenu>
+            </p:menubar>
+            <div class="ui-fluid">
+                <h:panelGrid columns='2' columnClasses="ui-g-12 ui-lg-7,ui-g-12 ui-lg-5">
+                    <p:dataGrid var="s" value="#{rasadnikController.sadnice}"
+                                columns="#{rasadnikController.rasadnik.duzina}" >
+                        <f:facet name="header">
+                            <h1>#{rasadnikController.rasadnik.ime}</h1>
+                            <p:separator/>
+                            <h3>#{rasadnikController.rasadnik.mesto}</h3>
+                        </f:facet>
+
+                        <p:panel header="#{s.pozicija}" style="text-align:center">
+                            <h:panelGrid columns="1" style="width:100%">
+                                <img src="img/#{s.naziv==null?'bezSadnice':'sadnica'}.png" width="50%"></img>
+                                
+                                <!--padajuca lista i psubmit za tu sadnicu-->
+
+                                <p:commandLink update="@form" oncomplete="PF('carDialog').show()" title="Prikaži detalje"
+                                               actionListener="#{rasadnikController.izaberiSadnicu(s)}">
+                                    <h:outputText styleClass="pi pi-search" style="margin:0 auto;"/>
+                                </p:commandLink>
+
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:dataGrid>
+                    <h:panelGrid columns="1">
+                            <p:panel header="Temperatura" style="margin-bottom:20px;" >
+                                <h:panelGrid columns="3" cellpadding="5">
+                                    <img src="img/temperature.png" width="100px"></img>
+                                    <h:panelGrid columns="1" style="float: right">
+                                        <p:commandButton style="margin:20px;" icon="pi pi-plus" action="#{rasadnikController.menjajTemp(1)}" update="temp"/>
+                                        <p:commandButton style="margin:20px;" icon="pi pi-minus" action="#{rasadnikController.menjajTemp(-1)}" update="temp"/>
+                                    </h:panelGrid>
+                                    <p:outputLabel id="temp" style="font-size: 60px;" value="#{rasadnikController.rasadnik.temp}°C"></p:outputLabel>
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel header="Količina vode" style="margin-bottom:20px">
+                                <h:panelGrid columns="3" cellpadding="5">
+                                    <img src="img/water.png" width="100px"></img>
+                                    <h:panelGrid columns="1">
+                                        <p:commandButton style="margin:20px;" icon="pi pi-plus" action="#{rasadnikController.menjajVodu(1)}" update="kolVode"/>
+                                        <p:commandButton style="margin:20px;" icon="pi pi-minus" action="#{rasadnikController.menjajVodu(-1)}" update="kolVode"/>
+                                    </h:panelGrid>
+                                    <p:outputLabel id="kolVode" style="font-size: 60px" value="#{rasadnikController.rasadnik.kolVode} l"></p:outputLabel>
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel header="Magacin" style="margin-bottom:20px">
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <img src="img/magacin.png" width="100px"></img>
+                                    <p:button style="margin:20px;"
+                                              outcome="magacin.xhtml" value="Idi u magacin"/>
+                                </h:panelGrid>
+                            </p:panel>
+
+                    </h:panelGrid>
+
+                </h:panelGrid>
+            </div>
+<!--        </h:form>
+        <h:form>-->
+            <p:dialog header="#{rasadnikController.selectedSadnica.naziv}" widgetVar="carDialog" 
+                      showEffect="fade" hideEffect="fade" 
+                      resizable="false" 
+                      modal="false">
+                <p:outputPanel id="carDetail" style="text-align:center;">
+                    <h:panelGrid style="margin: 0px auto"  columns="1" rendered="#{not empty rasadnikController.selectedSadnica}" >
+                        <f:facet name="header">
+                            <img src="img/#{rasadnikController.selectedSadnica.naziv==null?'bezSadnice':'sadnica'}.png" width="200px" ></img>
+                        </f:facet>
+                        <h3>#{rasadnikController.selectedSadnica.proizvodjac}</h3>
+                        <p:progressBar rendered="#{rasadnikController.selectedSadnica.naziv!=null}" value="#{rasadnikController.progresSadnice(rasadnikController.selectedSadnica)}" labelTemplate="{value}%"/>
+
+                    </h:panelGrid>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:selectOneMenu filter="true" filterMatchMode="contains" rendered="#{not rasadnikController.zaVadjenje}" id="proizvod" value="#{rasadnikController.selectedProizvodString}" style="width:100%">
+                            <f:selectItem itemLabel="Izaberi #{rasadnikController.selectedSadnica.naziv==null?'sadnicu':'preparat'}" itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{rasadnikController.selectedSadnica.naziv==null?rasadnikController.sadniceUMagacinu:rasadnikController.preparatiUMagacinu}" 
+                                                       var="proizvod" itemLabel="#{proizvod}" itemValue="#{proizvod.id}"/>
+                    </p:selectOneMenu >
+                    <p:separator rendered="#{not rasadnikController.zaVadjenje}"/>
+                    
+                    <p:commandButton disabled="#{rasadnikController.selectedSadnica.biceIzvadjena eq 1}" rendered="#{rasadnikController.zaVadjenje}" value="Izvadi sadnicu" update="@form" ajax="false" action="#{rasadnikController.postaviBiceIzvadjena}" icon="pi pi-check" style="width:100%"/>
+
+                    <p:commandButton rendered="#{ not rasadnikController.zaVadjenje}" value="Potvrdi" update="@form" ajax="false" action="#{rasadnikController.primeniIzMagacina}" icon="pi pi-check" style="width:100%"/>
+                </f:facet>
+            </p:dialog>
+            <br></br><br></br>
+            <p:toolbar style="position:fixed; left: 0; bottom: 0; width: 100%">
+                <f:facet name="left">
+                    © Nikola Dimitrijević
+                </f:facet>
+            </p:toolbar>
+        </h:form>
+
+    </h:body>
+</html>
